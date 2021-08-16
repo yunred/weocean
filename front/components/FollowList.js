@@ -7,7 +7,7 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import FolderIcon from '@material-ui/icons/Folder';
-import DeleteIcon from '@material-ui/icons/Delete';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -28,7 +28,7 @@ const FollowList = ({ header, data }) => (
           />
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="delete">
-              <DeleteIcon />
+              <HighlightOffIcon />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>

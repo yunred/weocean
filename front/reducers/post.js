@@ -1,3 +1,5 @@
+//imagePaths는 이미지 업로드 시 이미지 경로
+//PostAdded는 게시글 추가가 완료됐을 때 true
 export const initialState = {
   mainPosts: [
     {
@@ -37,10 +39,12 @@ export const initialState = {
   imagePaths: [],
   postAdded: false,
 };
-//imagePaths는 이미지 업로드 시 이미지 경로
-//PostAdded는 게시글 추가가 완료됐을 때 true
 
+//게시글 작성 action
+//action 이름을 따로 빼주면 오타를 줄여줌
 const ADD_POST = 'ADD_POST';
+
+//action 객체
 export const addPost = {
   type: ADD_POST,
 };

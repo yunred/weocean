@@ -1,14 +1,6 @@
-const dummyUser = {
-  id: 1,
-  nickname: '제로초',
-  Posts: [],
-  Followings: [],
-  Followers: [],
-};
-
 export const initialState = {
   isLoggedIn: false,
-  user: null,
+  me: null,
   signUpData: {},
   loginData: {},
 };
@@ -51,7 +43,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLoggedIn: true,
-        user: dummyUser,
+        me: action.data,
         loginData: action.data,
       };
     }
@@ -59,7 +51,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLoggedIn: false,
-        user: null,
+        me: null,
       };
     }
     case SIGN_UP: {

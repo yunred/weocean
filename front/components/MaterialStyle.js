@@ -24,6 +24,6 @@ export const BasicButton = styled(Button)({
   border: 0,
   color: 'white',
   marginBottom: 15,
-  borderRadius: 15,
+  borderRadius: 5,
   padding: '5px 30px',
 });
