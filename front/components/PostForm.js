@@ -3,7 +3,9 @@ import { Form } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { BasicButton } from './MaterialStyle';
 import { addPost } from '../reducers/post';
-import { Input } from './style';
+import { PostInput } from './style';
+import SendIcon from '@material-ui/icons/Send';
+
 //imagePath에 업로드된 이미지 경로 저장
 const PostForm = () => {
   const { imagePaths, postAdded } = useSelector((state) => state.post);
@@ -35,7 +37,7 @@ const PostForm = () => {
       encType="multipart/form-data"
       onFinish={onSubmit}
     >
-      <Input
+      <PostInput
         value={text}
         onChange={onChangeText}
         maxLength={140}
@@ -48,6 +50,7 @@ const PostForm = () => {
           type="primary"
           style={{ float: 'right' }}
           htmlType="submit"
+          endIcon={<SendIcon />}
         >
           업로드
         </BasicButton>

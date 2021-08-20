@@ -7,18 +7,15 @@ import LoginForm from '../components/loginform';
 import Signup from '../components/signup';
 import { SubButton } from '../components/MaterialStyle';
 import Container from '@material-ui/core/Container';
-import Router from 'next/router';
 
 const LoginSignup = () => {
   const { isLoggedin } = useSelector((state) => state.user);
-
+  //곧 사라질
   useEffect(() => {
     if (isLoggedin) {
-      Router.push('/');
       console.log(isLoggedin);
     }
   }, [isLoggedin]);
-  console.log(isLoggedin);
 
   const [newAccount, setNewAccount] = useState(false);
   const toggleLogin = () => setNewAccount((prev) => !prev);

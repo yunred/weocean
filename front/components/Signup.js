@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import CheckBox from '@material-ui/core/CheckBox';
@@ -22,11 +22,14 @@ const Signup = () => {
   const [password, onChangePassword] = useInput('');
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const router = useRouter();
 
+  //나중에 다시 체크
   useEffect(() => {
     if (user) {
+      console.log('go');
       alert('로그인했으니 메인페이지로 이동합니다.');
-      Router.push('/');
+      router.push('/');
     }
   }, [user && user.id]);
 
@@ -41,7 +44,6 @@ const Signup = () => {
   const onChangeTerm = useCallback((e) => {
     setTermError(!e.target.checked); //error은 check상태와 반대
     setTerm(e.target.checked); //term의 체크상태 boolean
-    console.log(e.target.checked);
   }, []);
 
   //여기서부터 시작
@@ -65,6 +67,7 @@ const Signup = () => {
         nick,
       })
     );
+    router.push('/');
   }, [password, passwordCheck, term]);
 
   return (

@@ -51,3 +51,19 @@ export const Input = styled.input`
     color: #aaaaaa;
   }
 `;
+
+export const PostInput = styled.textarea`
+  width: 100%;
+  border: 1px solid #aaaaaa;
+  outline: none;
+  border-radius: 0px;
+  line-height: 2.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  &:focus {
+    border: 1.2px solid #32bebe;
+  }
+  ::placeholder {
+    color: #aaaaaa;
+  }
+`;

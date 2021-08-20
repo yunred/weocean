@@ -1,29 +1,27 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
+import Card from '@material-ui/core/Card';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useSelector } from 'react-redux';
 import { Popover } from '@material-ui/core';
 import { BasicButton } from './MaterialStyle';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import PostImages from './PostImages';
 import PropTypes from 'prop-types';
+import CommentForm from './CommentForm';
 
 const Carddiv = styled.div`
   margin-bottom: 20px;
@@ -88,13 +86,11 @@ const PostCard = ({ post }) => {
           title={post.User.nickname}
           subheader="2021.08.16"
         />
-        <CardMedia
-          image={post.Images[0] && <PostImages image={post.Images} />}
-        />
+        <div>{post.Images[0] && <PostImages images={post.Images} />}</div>
         <CardContent>
           <span>{post.content}</span>
         </CardContent>
-        <CardActions disableSpacing>
+        <CardActions>
           <IconButton>
             <RepeatIcon />
           </IconButton>
@@ -112,6 +108,27 @@ const PostCard = ({ post }) => {
           </IconButton>
         </CardActions>
       </Card>
+      {commentFormOpened && (
+        <>
+          <CommentForm post={post} />
+          {/*댓글은 게시글에 속해있기에 게시글의 id를 받기 위해 props로 넘겨줌*/}
+          <List>
+            {post.Comments.map((item) => (
+              <>
+                <ListItem align Items="flex-start">
+                  <ListItemAvatar>
+                    <Avatar>{item.User.nickname[0]}</Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    secondary={item.User.nickname}
+                    primary={item.content}
+                  />
+                </ListItem>
+              </>
+            ))}
+          </List>
+        </>
+      )}
     </Carddiv>
   );
 };

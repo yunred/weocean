@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
-import Router from 'next/router';
+import React, { useCallback } from 'react';
 import useInput from '../hooks/useInput';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { loginAction } from '../reducers/user';
 import { MainButton } from './MaterialStyle';
 import { Input } from './style';
-import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 
 const LoginForm = () => {
   const [id, onChangeId] = useInput('');
@@ -18,13 +17,8 @@ const LoginForm = () => {
   } = useForm();
 
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    if (user) {
-      Router.push('/');
-    }
-  }, [user && user.id]);
+  const router = useRouter();
 
   const onSubmit = useCallback(() => {
     dispatch(
@@ -33,6 +27,7 @@ const LoginForm = () => {
         password,
       })
     );
+    router.push('/');
   }, [id, password]);
 
   return (
