@@ -22,6 +22,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import PostImages from './PostImages';
 import PropTypes from 'prop-types';
 import CommentForm from './CommentForm';
+import PostCardContent from './PostCardContent';
 
 const Carddiv = styled.div`
   margin-bottom: 20px;
@@ -88,7 +89,7 @@ const PostCard = ({ post }) => {
         />
         <div>{post.Images[0] && <PostImages images={post.Images} />}</div>
         <CardContent>
-          <span>{post.content}</span>
+          <span>{<PostCardContent postData={post.content} />}</span>
         </CardContent>
         <CardActions>
           <IconButton>
