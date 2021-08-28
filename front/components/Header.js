@@ -1,13 +1,13 @@
 import React from 'react';
-import { _Header } from './style';
 import Link from 'next/link';
-import { useSelector } from 'react-redux'; //react와 redux연결
-//useSelector는 리덕스 스토어의 상태를 조회하는 Hook
+import { useSelector } from 'react-redux'; // react와 redux연결
+import { MyHeader } from './style';
+// useSelector는 리덕스 스토어의 상태를 조회하는 Hook
 
 const Header = () => {
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
   return (
-    <_Header>
+    <MyHeader>
       <div className="sub1">
         <div className="icon">
           <div>아이콘</div>
@@ -15,7 +15,7 @@ const Header = () => {
             <a>Weocean</a>
           </Link>
         </div>
-        {isLoggedIn ? (
+        {me ? (
           <div>
             <Link href="/profile">
               <a>프로필</a>
@@ -39,7 +39,7 @@ const Header = () => {
           <input className="search_btn" type="submit" />
         </form>
       </div>
-    </_Header>
+    </MyHeader>
   );
 };
 

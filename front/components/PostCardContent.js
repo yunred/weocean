@@ -8,15 +8,15 @@ const PostCardContent = ({ postData }) => (
       if (v.match(/(#[^\s]+)/)) {
         return (
           <Link
-            href={{ pathname: '/hashtag', query: { tag: v.slice(1) } }} //slice(1)은 #을 뗀 것
-            as={`/hashtag/${v.slice(1)}`} //as는 URL에 표시될 경로
+            href={{ pathname: '/hashtag', query: { tag: v.slice(1) } }} // slice(1)은 #을 뗀 것
+            as={`/hashtag/${v.slice(1)}`} // as는 URL에 표시될 경로
             key={v}
           >
             <a>{v}</a>
           </Link>
         );
       }
-      return v; //해시태그가 아닌애들은 그대로 return
+      return v; // 해시태그가 아닌애들은 그대로 return
     })}
   </div>
 );

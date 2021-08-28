@@ -1,49 +1,49 @@
 import React, { useCallback } from 'react';
 import useInput from '../hooks/useInput';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { loginAction } from '../reducers/user';
+import { loginRequestAction } from '../reducers/user';
 import { MainButton } from './MaterialStyle';
 import { Input } from './style';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 
 const LoginForm = () => {
-  const [id, onChangeId] = useInput('');
+  const dispatch = useDispatch();
+  const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
+  const { logInLoading } = useSelector((state) => state.user);
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
 
-  const dispatch = useDispatch();
-
   const router = useRouter();
 
   const onSubmit = useCallback(() => {
     dispatch(
-      loginAction({
-        id,
+      loginRequestAction({
+        email,
         password,
       })
     );
     router.push('/');
-  }, [id, password]);
+  }, [email, password]);
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <label htmlFor="user_id">아이디</label>
+          <label htmlFor="user_email">이메일</label>
           <Input
-            type="text"
-            name="user_id"
-            placeholder="아이디"
-            {...register('user_id', { required: true })}
-            value={id}
-            onChange={onChangeId}
+            type="email"
+            name="user_email"
+            placeholder="이메일"
+            {...register('user_email', { required: true })}
+            value={email}
+            onChange={onChangeEmail}
           />
-          {errors.user_id && '아이디를 입력해주세요'}
+          {errors.user_email && '이메일을 입력해주세요'}
         </div>
         <div>
           <label htmlFor="user_password">비밀번호</label>
@@ -61,7 +61,9 @@ const LoginForm = () => {
           {errors.user_password && <span>{errors.user_password.message}</span>}
         </div>
         <div>
-          <MainButton type="submit">로그인</MainButton>
+          <MainButton type="submit" loading={logInLoading}>
+            로그인
+          </MainButton>
         </div>
       </form>
     </>

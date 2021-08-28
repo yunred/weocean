@@ -14,10 +14,10 @@ import {
   Global,
 } from './imgstyles';
 
-//material ui icon styling
+// material ui icon styling
 
 const ImagesZoom = ({ images, onClose }) => {
-  const [currentSlide, setCurrentSlide] = useState(0); //현재 슬라이드
+  const [currentSlide, setCurrentSlide] = useState(0); // 현재 슬라이드
   const classes = useStyles();
 
   return (
@@ -32,15 +32,15 @@ const ImagesZoom = ({ images, onClose }) => {
       <SlickWrapper>
         <div>
           <Slick
-            initialSlide={0} //0번 째 이미지부터 시작
+            initialSlide={0} // 0번 째 이미지부터 시작
             beforeChange={(slide, newSlide) => setCurrentSlide(newSlide)}
-            infinite //무한반복
-            arrows={false} //화살표 지움
-            slidesToShow={1} //한 번에 하나씩만 보임
+            infinite // 무한반복
+            arrows={false} // 화살표 지움
+            slidesToShow={1} // 한 번에 하나씩만 보임
             slidesToScroll={1}
           >
             {/* 중요 */}
-            {images.map((v) => (
+            {images.map(v => (
               <ImgWrapper key={v.src}>
                 <img src={v.src} alt={v.src} />
               </ImgWrapper>

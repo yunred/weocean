@@ -14,7 +14,7 @@ export const Global = createGlobalStyle`
 
 `;
 
-export const _Header = styled.div`
+export const MyHeader = styled.div`
   display: flex;
   flex-direction: column;
 

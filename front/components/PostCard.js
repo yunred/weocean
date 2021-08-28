@@ -11,7 +11,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Popover } from '@material-ui/core';
 import { BasicButton } from './MaterialStyle';
 
@@ -23,6 +23,8 @@ import PostImages from './PostImages';
 import PropTypes from 'prop-types';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
+import { REMOVE_POST_REQUEST } from '../reducers/post';
+import FollowButton from './FollowButton';
 
 const Carddiv = styled.div`
   margin-bottom: 20px;
@@ -30,7 +32,10 @@ const Carddiv = styled.div`
 
 //배열 안에 jsx를 넣을 때는 key를 붙여줘야한다
 const PostCard = ({ post }) => {
-  const id = useSelector((state) => state.me?.id);
+  const dispatch = useDispatch();
+  const { me } = useSelector((state) => state.user);
+  const id = me && me.id;
+  const { removePostLoading } = useSelector((state) => state.post);
 
   const [anchor, setAnchor] = useState(null);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -49,6 +54,14 @@ const PostCard = ({ post }) => {
   const handleClose = () => {
     setAnchor(null);
   };
+
+  const onRemovePost = useCallback(() => {
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
+  }, []);
+
   return (
     <Carddiv key={post.id}>
       <Card>
@@ -73,10 +86,15 @@ const PostCard = ({ post }) => {
                   horizontal: 'left',
                 }}
               >
-                {id && post.User.id === id ? (
+                {id && post.UserId === id ? (
                   <>
                     <BasicButton>수정</BasicButton>
-                    <BasicButton>삭제</BasicButton>
+                    <BasicButton
+                      onClick={onRemovePost}
+                      loading={removePostLoading}
+                    >
+                      삭제
+                    </BasicButton>
                   </>
                 ) : (
                   <BasicButton>신고</BasicButton>
@@ -107,6 +125,7 @@ const PostCard = ({ post }) => {
           <IconButton key="message" onClick={onToggleComment}>
             <SmsOutlinedIcon />
           </IconButton>
+          {id && <FollowButton post={post} />}
         </CardActions>
       </Card>
       {commentFormOpened && (

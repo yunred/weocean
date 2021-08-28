@@ -1,52 +1,53 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import CheckBox from '@material-ui/core/CheckBox';
 import { FormControlLabel } from '@material-ui/core';
 import { Input } from './style';
 import { MainButton } from './MaterialStyle';
-import { signUpAction } from '../reducers/user';
-//import AppLayout from './AppLayout';
+import { SIGN_UP_REQUEST } from '../reducers/user';
+
+// import AppLayout from './AppLayout';
 import useInput from '../hooks/useInput';
-import { useSelector } from 'react-redux'; //react와 redux연결
 
 const Signup = () => {
   const [passwordCheck, setPasswordCheck] = useState('');
   const [term, setTerm] = useState(false);
-  const [passwordError, setPasswordError] = useState(false); //true일 때 에러표시
+  const [passwordError, setPasswordError] = useState(false); // true일 때 에러표시
   const [termError, setTermError] = useState(false);
 
-  const [id, onChangeId] = useInput('');
+  const [email, onChangeEmail] = useInput('');
   const [nick, onChangeNick] = useInput('');
   const [password, onChangePassword] = useInput('');
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const { singUpLoading } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
   const router = useRouter();
 
-  //나중에 다시 체크
+  // 나중에 다시 체크
+
   useEffect(() => {
-    if (user) {
-      console.log('go');
+    if (me) {
       alert('로그인했으니 메인페이지로 이동합니다.');
       router.push('/');
     }
-  }, [user && user.id]);
+  }, [me && me.id]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
-      setPasswordError(e.target.value !== password); //password와 password check랑 다른지
+      setPasswordError(e.target.value !== password); // password와 password check랑 다른지
       setPasswordCheck(e.target.value);
     },
     [password]
   );
 
   const onChangeTerm = useCallback((e) => {
-    setTermError(!e.target.checked); //error은 check상태와 반대
-    setTerm(e.target.checked); //term의 체크상태 boolean
+    setTermError(!e.target.checked); // error은 check상태와 반대
+    setTerm(e.target.checked); // term의 체크상태 boolean
   }, []);
 
-  //여기서부터 시작
+  // 여기서부터 시작
   const {
     handleSubmit,
     register,
@@ -60,29 +61,30 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
-    dispatch(
-      signUpAction({
-        id,
+    dispatch({
+      type: SIGN_UP_REQUEST,
+      data: {
+        email,
         password,
         nick,
-      })
-    );
+      },
+    });
     router.push('/');
   }, [password, passwordCheck, term]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <label htmlFor="user_id">아이디</label>
+        <label htmlFor="user_email">이메일</label>
         <Input
-          type="text"
-          name="user_id"
-          placeholder="아이디"
-          {...register('user_id', { required: true })}
-          value={id}
-          onChange={onChangeId}
+          type="email"
+          name="user_email"
+          placeholder="이메일"
+          {...register('user_email', { required: true })}
+          value={email}
+          onChange={onChangeEmail}
         />
-        {errors.user_id && '아이디를 입력해주세요'}
+        {errors.user_email && '이메일를 입력해주세요'}
       </div>
       <div>
         <label htmlFor="user_nick">닉네임</label>
@@ -140,7 +142,9 @@ const Signup = () => {
         )}
       </div>
       <div>
-        <MainButton type="submit">회원가입</MainButton>
+        <MainButton type="submit" loading={singUpLoading}>
+          회원가입
+        </MainButton>
       </div>
     </form>
   );
