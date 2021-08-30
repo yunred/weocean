@@ -1,6 +1,9 @@
 const express = require('express');
 const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
 const db = require('./models');
+
+const app = express();
 db.sequelize
   .sync()
   .then(() => {
@@ -8,7 +11,8 @@ db.sequelize
   })
   .catch(console.error);
 
-const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: tru }));
 
 app.get('/', (req, res) => {
   res.send('hello express');
@@ -26,6 +30,7 @@ app.get('/posts', (req, res) => {
 });
 
 app.use('/post', postRouter); //중복되는 post prefix로 빼주기
+app.use('/user', userRouter);
 
 app.listen(3065, () => {
   console.log('서버 실행 중');

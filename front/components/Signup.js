@@ -18,7 +18,7 @@ const Signup = () => {
   const [termError, setTermError] = useState(false);
 
   const [email, onChangeEmail] = useInput('');
-  const [nick, onChangeNick] = useInput('');
+  const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
   const dispatch = useDispatch();
   const { singUpLoading } = useSelector((state) => state.user);
@@ -66,7 +66,7 @@ const Signup = () => {
       data: {
         email,
         password,
-        nick,
+        nickname,
       },
     });
     router.push('/');
@@ -87,19 +87,19 @@ const Signup = () => {
         {errors.user_email && '이메일를 입력해주세요'}
       </div>
       <div>
-        <label htmlFor="user_nick">닉네임</label>
+        <label htmlFor="user_nickname">닉네임</label>
         <Input
           type="text"
-          name="user_nick"
+          name="user_nickname"
           placeholder="닉네임"
-          {...register('user_nick', { required: true, maxLength: 10 })}
-          value={nick}
-          onChange={onChangeNick}
+          {...register('user_nickname', { required: true, maxLength: 10 })}
+          value={nickname}
+          onChange={onChangeNickname}
         />
-        {errors.user_nick && errors.user_nick.type === 'required' && (
+        {errors.user_nickname && errors.user_nickname.type === 'required' && (
           <span>닉네임을 입력해주세요</span>
         )}
-        {errors.user_nick && errors.user_nick.type === 'maxLength' && (
+        {errors.user_nickname && errors.user_nickname.type === 'maxLength' && (
           <span>닉네임을 10자 이내로 입력해주세요</span>
         )}
       </div>
