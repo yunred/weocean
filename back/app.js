@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
 const db = require('./models');
@@ -11,8 +12,15 @@ db.sequelize
   })
   .catch(console.error);
 
+app.use(
+  cors({
+    origin: true, //보낸 곳의 주소가 자동으로 들어감
+    credentials: false,
+  })
+);
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: tru }));
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.send('hello express');

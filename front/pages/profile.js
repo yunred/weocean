@@ -13,10 +13,14 @@ const Profile = () => {
   const { me } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (!me) {
-      Router.replace('/');
+    if (!(me && me.id)) {
+      Router.push('/');
     }
-  }, [me]);
+  }, [me && me.id]);
+
+  if (!me) {
+    return null;
+  }
 
   return (
     <AppLayout>

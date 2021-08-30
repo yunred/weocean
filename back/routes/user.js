@@ -1,7 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { User } = require('../models');
-const { noExtendLeft } = require('sequelize/types/lib/operators');
 
 const router = express.Router();
 
@@ -11,7 +10,7 @@ router.post('/', async (req, res, next) => {
     //중복이메일 검사
     const exUser = await User.findOne({
       where: {
-        email: req.body.eamil,
+        email: req.body.email,
       },
     });
     if (exUser) {

@@ -7,8 +7,6 @@ import { FormControlLabel } from '@material-ui/core';
 import { Input } from './style';
 import { MainButton } from './MaterialStyle';
 import { SIGN_UP_REQUEST } from '../reducers/user';
-
-// import AppLayout from './AppLayout';
 import useInput from '../hooks/useInput';
 
 const Signup = () => {
@@ -21,18 +19,25 @@ const Signup = () => {
   const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
   const dispatch = useDispatch();
-  const { singUpLoading } = useSelector((state) => state.user);
-  const { me } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError } = useSelector(
+    (state) => state.user
+  );
   const router = useRouter();
 
   // 나중에 다시 체크
 
   useEffect(() => {
-    if (me) {
+    if (signUpDone) {
       alert('로그인했으니 메인페이지로 이동합니다.');
       router.push('/');
     }
-  }, [me && me.id]);
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if (signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpError]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
@@ -55,6 +60,7 @@ const Signup = () => {
   } = useForm();
 
   const onSubmit = useCallback(() => {
+    console.log(email, nickname, password);
     if (password !== passwordCheck) {
       return setPasswordError(true);
     }
@@ -142,7 +148,7 @@ const Signup = () => {
         )}
       </div>
       <div>
-        <MainButton type="submit" loading={singUpLoading}>
+        <MainButton type="submit" loading={signUpLoading}>
           회원가입
         </MainButton>
       </div>
