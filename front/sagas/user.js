@@ -20,17 +20,16 @@ import {
 } from '../reducers/user';
 
 function logInAPI(data) {
-  return axios.post('/api/login', data);
+  return axios.post('/user/login', data);
 }
 
 function* logIn(action) {
   try {
-    console.log('saga logIn');
-    // const result = yield call(logInAPI);
-    yield delay(1000);
+    const result = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data, //LOG_IN_REQUEST에서 들어온 data를 바로 LOG_IN_SUCCESS로 보내버림
+      data: result.data, //LOG_IN_REQUEST에서 들어온 data를 바로 LOG_IN_SUCCESS로 보내버림
+      //서버로부터 사용자 정보를 받아옴
     });
   } catch (err) {
     console.error(err);
@@ -43,7 +42,7 @@ function* logIn(action) {
 //LOG_IN_SUCCESS액션과 LOG_IN_FAILURE액션은 saga가 호출해줘서 액션을 만들 필요 X
 
 function logOutAPI() {
-  return axios.post('/api/logout');
+  return axios.post('/user/logout');
 }
 
 function* logOut() {
@@ -63,7 +62,7 @@ function* logOut() {
 }
 
 function signUpAPI(data) {
-  return axios.post('http://localhost:3065/user', data);
+  return axios.post('/user', data);
 }
 
 function* signUp(action) {
@@ -83,13 +82,12 @@ function* signUp(action) {
 }
 
 function followAPI() {
-  return axios.post('/api/follow');
+  return axios.post('/follow');
 }
 
 function* follow(action) {
   try {
-    // const result = yield call(followAPI);
-    yield delay(1000);
+    const result = yield call(followAPI, action.data);
     yield put({
       type: FOLLOW_SUCCESS,
       data: action.data,
@@ -104,7 +102,7 @@ function* follow(action) {
 }
 
 function unfollowAPI() {
-  return axios.post('/api/unfollow');
+  return axios.post('/unfollow');
 }
 
 function* unfollow(action) {

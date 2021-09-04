@@ -124,7 +124,7 @@ const reducer = (state = initialState, action) =>
         break;
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
-        draft.me = dummyUser(action.data); //함수로 빼줌
+        draft.me = action.data; //함수로 빼줌
         draft.logInDone = true;
         break;
       case LOG_IN_FAILURE:
