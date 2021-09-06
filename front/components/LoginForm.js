@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import useInput from '../hooks/useInput';
 import { useForm } from 'react-hook-form';
 import { loginRequestAction } from '../reducers/user';
@@ -11,7 +11,7 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
-  const { logInLoading } = useSelector((state) => state.user);
+  const { logInLoading, loginError, me } = useSelector((state) => state.user);
   const {
     handleSubmit,
     register,
@@ -20,6 +20,18 @@ const LoginForm = () => {
 
   const router = useRouter();
 
+  useEffect(() => {
+    if (me && me.id) {
+      router.replace('/');
+    }
+  }, [me && me.id]);
+
+  useEffect(() => {
+    if (loginError) {
+      alert(loginError);
+    }
+  }, [loginError]);
+
   const onSubmit = useCallback(() => {
     dispatch(
       loginRequestAction({
@@ -27,7 +39,6 @@ const LoginForm = () => {
         password,
       })
     );
-    router.push('/');
   }, [email, password]);
 
   return (

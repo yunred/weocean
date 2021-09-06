@@ -59,6 +59,8 @@ app.get('/posts', (req, res) => {
 app.use('/post', postRouter); //중복되는 post prefix로 빼주기
 app.use('/user', userRouter);
 
+//에러처리 미들웨어는 내부적으로 존재
+
 app.listen(3065, () => {
   console.log('서버 실행 중');
 });
