@@ -72,26 +72,6 @@ export const addPost = (data) => ({
   data,
 });
 
-const dummyPost = (data) => ({
-  id: data.id,
-  content: '더미데이터입니다.',
-  User: {
-    id: 1,
-    nickname: '윤',
-  },
-  Images: [],
-  Comments: [],
-});
-
-const dummyComment = (data) => ({
-  id: shortId.generate(),
-  content: data,
-  User: {
-    id: 1,
-    nickname: '윤',
-  },
-});
-
 //immer을 쓰면서 state를 draft로 대체
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -119,7 +99,7 @@ const reducer = (state = initialState, action) =>
       case ADD_POST_SUCCESS:
         draft.addPostLoading = false;
         draft.addPostDone = true;
-        draft.mainPosts.unshift(dummyPost(action.data)); //unshift로 배열 첫 번째 요소에 추가
+        draft.mainPosts.unshift(action.data); //unshift로 배열 첫 번째 요소에 추가
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
@@ -145,8 +125,8 @@ const reducer = (state = initialState, action) =>
         draft.addCommentError = null;
         break;
       case ADD_COMMENT_SUCCESS: {
-        const post = draft.mainPosts.find((v) => v.id === action.data.postId); //게시글 중 내가 원하는 게시글 찾아서
-        post.Comments.unshift(dummyComment(action.data.content)); //댓글 넣기
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId); //게시글 중 내가 원하는 게시글 찾아서
+        post.Comments.unshift(action.data); //댓글 넣기
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;
