@@ -1,5 +1,4 @@
 import axios from 'axios';
-import shortId from 'shortid';
 import {
   all,
   delay,
@@ -17,7 +16,6 @@ import {
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
-  generateDummyPost,
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
@@ -33,11 +31,11 @@ function loadPostsAPI(data) {
 
 function* loadPosts(action) {
   try {
-    // const result = yield call(loadPostsAPI, action.data);
+    const result = yield call(loadPostsAPI, action.data);
     yield delay(1000);
     yield put({
       type: LOAD_POSTS_SUCCESS,
-      data: generateDummyPost(10), //success할 때 가짜데이터 10개를 만듦
+      data: result.data,
     });
   } catch (err) {
     console.error(err);
@@ -49,7 +47,13 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  return axios.post('/post', { content: data }); //data에 게시글정보, 백엔드 routes 에서 req.body.content
+  return axios.post(
+    '/post',
+    { content: data },
+    {
+      withCredentials: true,
+    }
+  ); //data에 게시글정보, 백엔드 routes 에서 req.body.content
 }
 
 function* addPost(action) {
@@ -73,7 +77,9 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-  return axios.delete('/api/post', data);
+  return axios.delete('/api/post', data, {
+    withCredentials: true,
+  });
 }
 
 function* removePost(action) {
@@ -98,7 +104,9 @@ function* removePost(action) {
 }
 
 function addCommentAPI(data) {
-  return axios.post(`/post/${data.postId}/comment`, data);
+  return axios.post(`/post/${data.postId}/comment`, data, {
+    withCredentials: true,
+  });
 }
 
 function* addComment(action) {

@@ -8,7 +8,7 @@ import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard.js';
 import AppLayout from '../components/AppLayout';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
-// import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import { LOAD_USER_REQUEST } from '../reducers/user';
 // import wrapper from '../store/configureStore';
 
 const Home = () => {
@@ -19,6 +19,9 @@ const Home = () => {
   );
   //컴포넌트가 mount될 때 요청 호출
   useEffect(() => {
+    dispatch({
+      type: LOAD_USER_REQUEST,
+    });
     dispatch({
       type: LOAD_POSTS_REQUEST,
     });

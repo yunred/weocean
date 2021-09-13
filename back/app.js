@@ -5,9 +5,11 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
+const postsRouter = require('./routes/posts');
 const db = require('./models');
 const passportConfig = require('./passport');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 const path = require('path');
 
 dotenv.config();
@@ -21,10 +23,11 @@ db.sequelize
 
 passportConfig();
 
+app.use(morgan('dev'));
 app.use(
   cors({
-    origin: true, //보낸 곳의 주소가 자동으로 들어감
-    credentials: false,
+    origin: 'http://localhost:3000', //보낸 곳의 주소가 자동으로 들어감
+    credentials: true, //기본값: false, 쿠키도 같이 전달하려면 true
   })
 );
 app.use('/', express.static(path.join(__dirname, 'uploads')));
@@ -48,15 +51,8 @@ app.get('/', (req, res) => {
   res.send('hello api');
 });
 
-app.get('/posts', (req, res) => {
-  res.send([
-    { id: 1, content: 'hello' },
-    { id: 2, content: 'hello1' },
-    { id: 3, content: 'hello3' },
-  ]);
-});
-
-app.use('/post', postRouter); //중복되는 post prefix로 빼주기
+app.use('/posts', postsRouter);
+app.use('/post', postRouter);
 app.use('/user', userRouter);
 
 //에러처리 미들웨어는 내부적으로 존재

@@ -1,6 +1,3 @@
-import shortId from 'shortid';
-import faker from 'faker';
-
 import produce from '../util/produce';
 
 export const initialState = {
@@ -20,33 +17,6 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 };
-
-//saga에서도 쓰려고 export함
-export const generateDummyPost = (number) =>
-  Array(number)
-    .fill()
-    .map(() => ({
-      id: shortId.generate(),
-      User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName(),
-      },
-      content: faker.lorem.paragraph(),
-      Images: [
-        {
-          src: faker.image.image(),
-        },
-      ],
-      Comments: [
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: faker.name.findName(),
-          },
-          content: faker.lorem.sentence(),
-        },
-      ],
-    }));
 
 // action 이름을 따로 빼주면 오타를
 //화면 로딩시 LOAD_POSTS_REQUEST 호출

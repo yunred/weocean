@@ -6,27 +6,13 @@ const { User, Post } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const router = express.Router();
 
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    //Post /user/login
-    //(서버, 성공, 클라이언트 에러)
-    if (err) {
-      console.error(err);
-      return next(err);
-    }
-    if (info) {
-      return res.status(401).send(info.reason);
-    }
-    //문제 없으면 req.login할 때 passport 로그인 시도
-    return req.login(user, isNotLoggedIn, async loginErr => {
-      //loginErr는 passport login error
-      if (loginErr) {
-        console.error(loginErr);
-        return next(loginErr);
-      }
+//새로고침시 요청
+router.get('/', async (req, res, next) => {
+  // GET /user
+  try {
+    if (req.user) {
       const fullUserWithoutPassword = await User.findOne({
-        where: { id: user.id },
-        //atrivbutes로 원하는 정보만 가져올 수 있다
+        where: { id: req.user.id },
         attributes: {
           exclude: ['password'],
         },
@@ -47,9 +33,59 @@ router.post('/login', (req, res, next) => {
           },
         ],
       });
-      //sequelize가 다른 테이블 간 관계를 자동으로 합쳐줌
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(200).json(null); //사용자 없을 때 안보내줌
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 
-      return res.status(200).json(user); //사용자 정보를 프론트로 넘겨줌
+router.post('/login', isNotLoggedIn, (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    //Post /user/login
+    //(서버, 성공, 클라이언트 에러)
+    if (err) {
+      console.error(err);
+      return next(err);
+    }
+    if (info) {
+      return res.status(401).send(info.reason);
+    }
+    //문제 없으면 req.login할 때 passport 로그인 시도
+    return req.login(user, async loginErr => {
+      //loginErr는 passport login error
+      if (loginErr) {
+        console.error(loginErr);
+        return next(loginErr);
+      }
+      const fullUserWithoutPassword = await User.findOne({
+        //attributes로 원하는 정보만 가져올 수 있다
+        where: { id: user.id },
+        attributes: {
+          exclude: ['password'],
+        },
+        include: [
+          {
+            model: Post,
+            attributes: ['id'],
+          },
+          {
+            model: User,
+            as: 'Followings',
+            attributes: ['id'],
+          },
+          {
+            model: User,
+            as: 'Followers',
+            attributes: ['id'],
+          },
+        ],
+        //sequelize가 다른 테이블 간 관계를 자동으로 합쳐줌
+      });
+      return res.status(200).json(fullUserWithoutPassword); //사용자 정보를 프론트로 넘겨줌
     });
   })(req, res, next);
 });

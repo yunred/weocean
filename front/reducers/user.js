@@ -1,6 +1,9 @@
 import produce from '../util/produce';
 
 export const initialState = {
+  loadUserLoading: false, // 유저 정보 가져오기 시도중
+  loadUserDone: false,
+  loadUserError: null,
   followLoading: false, // 팔로우 시도중 , true일때 loading창 띄움
   followDone: false,
   followError: null,
@@ -25,6 +28,11 @@ export const initialState = {
 };
 
 // 액션의 이름 export 변수로 빼줌(액션 호출하거나 saga에서 쓰니까)
+
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
+
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
@@ -55,24 +63,6 @@ export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME'; //내 게시글 삭제
 //액션 함수
 //대부분의 요청은 비동기, 따라서 request/success/failure 세 개로 구성
 
-//dummyUser 함수
-const dummyUser = (data) => ({
-  ...data,
-  nickname: '윤',
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [
-    { nickname: '부기초' },
-    { nickname: 'Chanho Lee' },
-    { nickname: 'neue zeal' },
-  ],
-  Followers: [
-    { nickname: '부기초' },
-    { nickname: 'Chanho Lee' },
-    { nickname: 'neue zeal' },
-  ],
-});
-
 export const loginRequestAction = (data) => ({
   type: LOG_IN_REQUEST,
   data,
@@ -87,6 +77,20 @@ export const logoutRequestAction = () => ({
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserError = null;
+        draft.loadUserDone = false;
+        break;
+      case LOAD_USER_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.me = action.data;
+        draft.loadUserDone = true;
+        break;
+      case LOAD_USER_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserError = action.error;
+        break;
       case FOLLOW_REQUEST:
         draft.followLoading = true;
         draft.followError = null; //REQUEST에서 loading할 때 에러 없애기
