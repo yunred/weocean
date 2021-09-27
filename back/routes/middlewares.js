@@ -1,6 +1,5 @@
 //로그인 유무 검사 미들웨어
 exports.isLoggedIn = (req, res, next) => {
-  //isAuthenticated는 passport에서 제공하는 거
   if (req.isAuthenticated()) {
     next();
   } else {

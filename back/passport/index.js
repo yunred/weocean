@@ -20,26 +20,11 @@ module.exports = () => {
 
   local();
 };
-// const passport = require('passport');
-// const { User } = require('../models');
-// const local = require('./local');
 
-// module.exports = () => {
-//   passport.serializeUser((user, done) => {
-//     //첫 번째 인자: 서버, 두 번째 인자: 성공
-//     done(null, user.id); //서버에 들고있기 무거우니 id만 저장
-//   });
+// 프론트에서 서버로는 cookie만 보내요(clhxy)
+// 서버가 쿠키파서, 익스프레스 세션으로 쿠키 검사 후 id: 1 발견
+// id: 1이 deserializeUser에 들어감
+// req.user로 사용자 정보가 들어감
 
-//   //복원 시 id로 복원
-//   passport.deserializeUser(async (id, done) => {
-//     try {
-//       const user = await User.findOne({ where: { id } });
-//       done(null, user); // req.user 생성
-//     } catch (error) {
-//       console.error(error);
-//       done(error);
-//     }
-//   });
-
-//   local();
-// };
+// 요청 보낼때마다 deserializeUser가 실행됨(db 요청 1번씩 실행)
+// 실무에서는 deserializeUser 결과물 캐싱

@@ -4,7 +4,7 @@ export const initialState = {
   loadUserLoading: false, // 유저 정보 가져오기 시도중
   loadUserDone: false,
   loadUserError: null,
-  followLoading: false, // 팔로우 시도중 , true일때 loading창 띄움
+  followLoading: false, // 팔로우 시도중
   followDone: false,
   followError: null,
   unfollowLoading: false, // 언팔로우 시도중
@@ -22,12 +22,19 @@ export const initialState = {
   changeNicknameLoading: false, // 닉네임 변경 시도중
   changeNicknameDone: false,
   changeNicknameError: null,
+  loadFollowingsLoading: false,
+  loadFollowingsDone: false,
+  loadFollowingsError: null,
+  loadFollowersLoading: false,
+  loadFollowersDone: false,
+  loadFollowersError: null,
+  removeFollowerLoading: false,
+  removeFollowerDone: false,
+  removeFollowerError: null,
   me: null,
   signUpData: {},
   loginData: {},
 };
-
-// 액션의 이름 export 변수로 빼줌(액션 호출하거나 saga에서 쓰니까)
 
 export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
 export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
@@ -57,11 +64,20 @@ export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 
-export const ADD_POST_TO_ME = 'ADD_POST_TO_ME'; //내 게시글 추가
-export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME'; //내 게시글 삭제
+export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST';
+export const REMOVE_FOLLOWER_SUCCESS = 'REMOVE_FOLLOWER_SUCCESS';
+export const REMOVE_FOLLOWER_FAILURE = 'REMOVE_FOLLOWER_FAILURE';
 
-//액션 함수
-//대부분의 요청은 비동기, 따라서 request/success/failure 세 개로 구성
+export const LOAD_FOLLOWINGS_REQUEST = 'LOAD_FOLLOWINGS_REQUEST';
+export const LOAD_FOLLOWINGS_SUCCESS = 'LOAD_FOLLOWINGS_SUCCESS';
+export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE';
+
+export const LOAD_FOLLOWERS_REQUEST = 'LOAD_FOLLOWERS_REQUEST';
+export const LOAD_FOLLOWERS_SUCCESS = 'LOAD_FOLLOWERS_SUCCESS';
+export const LOAD_FOLLOWERS_FAILURE = 'LOAD_FOLLOWERS_FAILURE';
+
+export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
+export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
 export const loginRequestAction = (data) => ({
   type: LOG_IN_REQUEST,
@@ -72,11 +88,53 @@ export const logoutRequestAction = () => ({
   type: LOG_OUT_REQUEST,
 });
 
-//reducer
-//이전 state + action => 다음 state 돌려주는 함수
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
+      case REMOVE_FOLLOWER_REQUEST:
+        draft.removeFollowerLoading = true;
+        draft.removeFollowerError = null;
+        draft.removeFollowerDone = false;
+        break;
+      case REMOVE_FOLLOWER_SUCCESS:
+        draft.removeFollowerLoading = false;
+        draft.me.Followers = draft.me.Followers.filter(
+          (v) => v.id !== action.data.UserId
+        );
+        draft.removeFollowerDone = true;
+        break;
+      case REMOVE_FOLLOWER_FAILURE:
+        draft.removeFollowerLoading = false;
+        draft.removeFollowerError = action.error;
+        break;
+      case LOAD_FOLLOWINGS_REQUEST:
+        draft.loadFollowingsLoading = true;
+        draft.loadFollowingsError = null;
+        draft.loadFollowingsDone = false;
+        break;
+      case LOAD_FOLLOWINGS_SUCCESS:
+        draft.loadFollowingsLoading = false;
+        draft.me.Followings = action.data;
+        draft.loadFollowingsDone = true;
+        break;
+      case LOAD_FOLLOWINGS_FAILURE:
+        draft.loadFollowingsLoading = false;
+        draft.loadFollowingsError = action.error;
+        break;
+      case LOAD_FOLLOWERS_REQUEST:
+        draft.loadFollowersLoading = true;
+        draft.loadFollowersError = null;
+        draft.loadFollowersDone = false;
+        break;
+      case LOAD_FOLLOWERS_SUCCESS:
+        draft.loadFollowersLoading = false;
+        draft.me.Followers = action.data;
+        draft.loadFollowersDone = true;
+        break;
+      case LOAD_FOLLOWERS_FAILURE:
+        draft.loadFollowersLoading = false;
+        draft.loadFollowersError = action.error;
+        break;
       case LOAD_USER_REQUEST:
         draft.loadUserLoading = true;
         draft.loadUserError = null;
@@ -93,12 +151,12 @@ const reducer = (state = initialState, action) =>
         break;
       case FOLLOW_REQUEST:
         draft.followLoading = true;
-        draft.followError = null; //REQUEST에서 loading할 때 에러 없애기
+        draft.followError = null;
         draft.followDone = false;
         break;
       case FOLLOW_SUCCESS:
         draft.followLoading = false;
-        draft.me.Followings.push({ id: action.data });
+        draft.me.Followings.push({ id: action.data.UserId });
         draft.followDone = true;
         break;
       case FOLLOW_FAILURE:
@@ -113,7 +171,7 @@ const reducer = (state = initialState, action) =>
       case UNFOLLOW_SUCCESS:
         draft.unfollowLoading = false;
         draft.me.Followings = draft.me.Followings.filter(
-          (v) => v.id !== action.data
+          (v) => v.id !== action.data.UserId
         );
         draft.unfollowDone = true;
         break;
@@ -128,7 +186,7 @@ const reducer = (state = initialState, action) =>
         break;
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
-        draft.me = action.data; //함수로 빼줌
+        draft.me = action.data;
         draft.logInDone = true;
         break;
       case LOG_IN_FAILURE:
@@ -136,17 +194,17 @@ const reducer = (state = initialState, action) =>
         draft.logInError = action.error;
         break;
       case LOG_OUT_REQUEST:
-        draft.logOutLoading = true; //request일 때는 보통 ing가 true
+        draft.logOutLoading = true;
         draft.logOutError = null;
         draft.logOutDone = false;
         break;
       case LOG_OUT_SUCCESS:
-        draft.logOutLoading = false; //성공하면 ing false
+        draft.logOutLoading = false;
         draft.logOutDone = true;
         draft.me = null;
         break;
       case LOG_OUT_FAILURE:
-        draft.logOutLoading = false; //실패해도 요청은 끝난거니까 ing false
+        draft.logOutLoading = false;
         draft.logOutError = action.error;
         break;
       case SIGN_UP_REQUEST:
@@ -168,6 +226,7 @@ const reducer = (state = initialState, action) =>
         draft.changeNicknameDone = false;
         break;
       case CHANGE_NICKNAME_SUCCESS:
+        draft.me.nickname = action.data.nickname;
         draft.changeNicknameLoading = false;
         draft.changeNicknameDone = true;
         break;

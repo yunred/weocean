@@ -4,7 +4,6 @@ import axios from 'axios';
 import postSaga from './post';
 import userSaga from './user';
 
-//base URL 설정
 axios.defaults.baseURL = 'http://localhost:3065';
 axios.defaults.withCredentials = true;
 

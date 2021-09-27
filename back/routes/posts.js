@@ -11,27 +11,25 @@ router.get('/', async (req, res, next) => {
     const where = {};
     if (parseInt(req.query.lastId, 10)) {
       // 초기 로딩이 아닐 때
-      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) }; //lastId는 고정
-    }
+      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+    } // 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
     const posts = await Post.findAll({
-      //여러개 가져올 때 findAll(모든 게시글 가져옴)
       where,
-      limit: 10, //10개만 가져오기
+      limit: 10,
       order: [
-        //2가지 기준으로 정렬
         ['createdAt', 'DESC'],
         [Comment, 'createdAt', 'DESC'],
       ],
       include: [
         {
-          model: User, //작성자 정보
-          attributes: ['id', 'nickname'], //비밀번호 빼고
+          model: User,
+          attributes: ['id', 'nickname'],
         },
         {
           model: Image,
         },
         {
-          model: Comment, //댓글의 작성자 이름까지 가져오기
+          model: Comment,
           include: [
             {
               model: User,

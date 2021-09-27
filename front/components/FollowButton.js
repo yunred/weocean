@@ -25,6 +25,10 @@ const FollowButton = ({ post }) => {
     }
   }, [isFollowing]);
 
+  if (post.User.id === me.id) {
+    return null; //자기 게시물에는 follow 버튼 안뜸
+  }
+
   return (
     <BasicButton
       loading={followLoading || unfollowLoading}
