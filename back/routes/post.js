@@ -245,7 +245,7 @@ router.delete('/:postId', isLoggedIn, async (req, res, next) => {
         UserId: req.user.id, //게시글 작성자
       },
     });
-    res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
+    res.status(200).json({ PostId: parseInt(req.params.postId, 10) }); //params는 문자열
   } catch (error) {
     console.error(error);
     next(error);
