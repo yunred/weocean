@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs'); //파일 시스템을 조작할 수 있는 모듈
 
 const { Post, Image, Comment, User, Hashtag } = require('../models');
 const { isLoggedIn } = require('./middlewares');
@@ -17,18 +17,20 @@ try {
 
 const upload = multer({
   storage: multer.diskStorage({
+    //어디에 저장할 것인가(컴퓨터의 하드디스크)
     destination(req, file, done) {
-      done(null, 'uploads');
+      done(null, 'uploads'); //uploads라는 폴더
     },
     filename(req, file, done) {
-      // 제로초.png
+      // ocean.png
       const ext = path.extname(file.originalname); // 확장자 추출(.png)
-      const basename = path.basename(file.originalname, ext); // 제로초
-      done(null, basename + '_' + new Date().getTime() + ext); // 제로초15184712891.png
+      const basename = path.basename(file.originalname, ext); // ocean
+      done(null, basename + '_' + new Date().getTime() + ext); // 제로초15184712891.png //이미지 덮어쓰기 문제 해결
     },
   }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB로 제한
 });
+
 router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
   // POST /post
   try {
@@ -93,10 +95,12 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
   }
 });
 
+//이미지 업로드용 router
 router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => {
   // POST /post/images
-  console.log(req.files);
-  res.json(req.files.map(v => v.filename));
+  // array/single/none => 이미지 한 장만 올리는 경우에는 single, 여러개 올리면 array
+  console.log(req.files); // 업로드 된 이미지 정보가 들어있음
+  res.json(req.files.map(v => v.filename)); // 파일명만 return
 });
 
 router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {

@@ -46,10 +46,11 @@ const PostForm = () => {
   }, [imageInput.current]);
 
   const onChangeImages = useCallback((e) => {
-    console.log('images', e.target.files);
+    console.log('images', e.target.files); //e.target.files 안에 선택한 이미지에 대한 정보 들어있음
     const imageFormData = new FormData();
     [].forEach.call(e.target.files, (f) => {
-      imageFormData.append('image', f);
+      //배열에 forEach 매서드를 빌려씀
+      imageFormData.append('image', f); // key와 백엔드의 post/images router의 upload.array('image;)가 일치해야함
     });
     dispatch({
       type: UPLOAD_IMAGES_REQUEST,
@@ -70,7 +71,7 @@ const PostForm = () => {
   return (
     <Form
       style={{ margin: '10px 0 20px' }}
-      encType="multipart/form-data"
+      encType="multipart/form-data" //이미지를 올리면 multipart/form-data 형식으로 올라감
       onFinish={onSubmit}
     >
       <PostInput
@@ -82,6 +83,7 @@ const PostForm = () => {
       <div>
         <input
           type="file"
+          name="image"
           multiple
           hidden
           ref={imageInput}
